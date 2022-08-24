@@ -1,0 +1,33 @@
+@ENDPOINT = http://localhost:8000/api
+
+### GET all
+GET {{ENDPOINT}}/products
+Content-Type: application/json
+
+### GET one
+GET {{ENDPOINT}}/product/6
+Content-Type: application/json
+
+### POST new
+POST {{ENDPOINT}}/product
+Content-Type: application/json
+
+{
+    "description": "Taladro 1HP B&D",
+    "price": 1500.00,
+    "stock":  100
+}
+
+### PUT update
+PUT {{ENDPOINT}}/product/7
+Content-Type: application/json
+
+{    
+    "description": "Taladro 1/2 hp B&D",
+    "price": 1300.00,
+    "stock":  99
+}
+
+### DELETE
+DELETE {{ENDPOINT}}/product/5
+Content-Type: application/json

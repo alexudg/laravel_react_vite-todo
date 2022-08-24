@@ -1,0 +1,168 @@
+﻿* tutorial
+  - https://www.youtube.com/watch?v=dyQLsQm1EtI&t=1s
+  - https://www.youtube.com/watch?v=_aj_adg1jeI
+
+* Pre-requisites:
+  - windows7 x64 sp1
+  - php v7.2.30
+    > php --version
+  - composer v2.4.1
+    > composer --version
+  - node v14.17.6
+
+*************** CREATE PROJECT LARAVEL *********************
+
+  > composer create-project laravel/laravel <name_project> // latest version
+    
+    composer create-project --prefer-dist laravel/laravel:^7.0 <name_project> // specific version
+
+  - verify version:
+    > npm artisan --version
+    Laravel Framework 7.30.6  
+
+* Database sqlite
+  - Create empty database on sqlite 'database.sqlite' (.sqlite required)
+  - copy database to api/database/database.sqlite
+
+* Configuration file '.env' for sqlite
+
+DB_CONNECTION=sqlite
+# DB_CONNECTION=mysql
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=laravel
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+* Create Model Product
+  > php artisan make:model Product -m 
+  -m: create migration
+
+  Create 
+  - app/Product.php
+  - database/migrations/<date>_create_products_table.php
+
+* Create controller ProductController
+  > php artisan make:controller ProductController --api 
+  --api: create controller clean, without views 
+  --resources: create controller with views 
+
+  Create 
+  - app/Http/Controllers/ProductController.php
+
+    functions
+    - index()
+    - store()
+    - show()
+    - update()
+    - destroy()
+
+* Edit migration api/database/migrations/<date>_create_products_table.php
+
+  public function up()
+  {
+    Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->timestamps();
+            $table->string('description');
+            $table->double('price', 9, 2);
+            $table->integer('stock');
+    }); 
+  }
+
+* Edit model api/Product.php
+  class Product extends Model
+  {
+      protected $fillable = ['description', 'price', 'stock'];
+  }  
+  
+* Create tables:
+  > php artisan migrate  
+
+* Edit Controller api/Http/Controllers/ProductController.php
+    ...
+    use App\Product;
+    ...
+
+    public function index()
+    {
+        $products = Product::all();
+        return $products;
+    }  
+
+    public function store(Request $request)
+    {
+        $product = new Product();
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->save();
+        return $product;
+    }
+
+    public function show($id)
+    {
+        $product = Product::find($id);
+        return $product;
+    }
+
+    public function update(Request $request, $id)
+    {
+        $product = Product::findOrFail($id);
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->stock = $request->stock;
+        $product->save();
+        return $product;
+    }
+
+    public function destroy($id)
+    {
+        $product = Product::destroy($id);
+        return $product;
+    }
+
+* Edit Routes routes/api.php
+  ...
+  use App\Http\Controllers\ProductController;    
+  ...
+  Route::get('/products', [ProductController::class, 'index']);
+  Route::post('/product', [ProductController::class, 'store']);
+  Route::get('/product/{id}', [ProductController::class, 'show']);
+  Route::put('/product/{id}', [ProductController::class, 'update']);
+  Route::delete('/product/{id}', [ProductController::class, 'delete']);
+
+  - verify
+    > php artisan route:list
+
+  - test with file 'request.http' after run serve   
+
+* Run serve on port default (8000)
+  > php artisan serve
+  Laravel development server started: http://127.0.0.1:8000
+
+* [Optional install authentication]
+  > composer require laravel/ui
+  > php artisan vue --auth
+
+
+*************** CREATE PROJECT REACT WITH VITE *********************
+
+  > npm create vite@latest
+    √ Project name: ... frontend
+    √ Select a framework: » react
+    √ Select a variant: » react    
+    
+    cd frontend
+    npm install
+    npm run dev
+
+* Install bootstrap
+  > npm install react-bootstrap bootstrap
+
+  import 'bootstrap/dist/css/bootstrap.min.css'; // src/index.js or App.js file
+
+* Install react-router-dom (v6.3.0)
+  > npm install react-router-dom[@6]
+
+  
